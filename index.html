@@ -1,0 +1,1131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Beryl · The Reading Stone</title>
+<meta name="description" content="Slide a glass reading stone across the page. The words swell under it, and a tap sends rings across the glass.">
+<meta property="og:title" content="Beryl · The Reading Stone">
+<meta property="og:description" content="Slide a glass reading stone across the page. The words swell under it, and a tap sends rings across the glass.">
+<meta property="og:image" content="https://sam1983aing.github.io/beryl/media/preview.jpg">
+<meta property="og:url" content="https://sam1983aing.github.io/beryl/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://sam1983aing.github.io/beryl/media/preview.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,200..800;1,200..800&family=Merriweather:ital,opsz,wdth,wght@0,18..144,87..112,300..900;1,18..144,87..112,300..900&display=swap">
+<script>if('WebGL2RenderingContext' in window)document.documentElement.classList.add('pre');</script>
+<style>
+:root{
+  --paper:#F2D9B9; --ink:#321606; --soft:#7A5A3E; --acc:#BC5A12;
+  --side:clamp(20px,4.4vw,72px);
+  --F:min(9.2vw,14.2vh,166px);
+}
+*{box-sizing:border-box}
+html{background:var(--paper);color:var(--ink);-webkit-text-size-adjust:100%;transition:background-color 1.2s ease}
+body{margin:0;font-family:'Atkinson Hyperlegible Next',system-ui,sans-serif}
+button{font:inherit;color:inherit}
+.page{position:relative;min-height:100vh;min-height:100svh;display:flex;flex-direction:column;
+  padding:clamp(16px,3.2vh,32px) var(--side) clamp(16px,3vh,30px);overflow:hidden}
+#glass{position:absolute;inset:0;width:100%;height:100%;display:block;opacity:0;transition:opacity .5s ease;pointer-events:none}
+.gl #glass{opacity:1}
+.top,.hero,.foot{position:relative;z-index:1;width:100%;max-width:1320px;margin-inline:auto}
+
+.top{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:16px}
+.brand{font-family:Merriweather,Georgia,serif;font-style:italic;font-weight:700;font-size:27px;line-height:1.3;letter-spacing:-.005em;margin:0;justify-self:center}
+.nav{justify-self:start}
+.nav,.util{display:flex;align-items:center;gap:clamp(14px,2vw,30px)}
+.util{justify-self:end}
+.navlink{position:relative;z-index:3;font-weight:500;font-size:14px;line-height:1.3;letter-spacing:.01em;color:var(--soft);
+  background:none;border:0;padding:8px 0;cursor:pointer}
+#bag{color:var(--ink)}
+
+.hero{margin-block:auto;margin-inline:auto;display:grid;grid-template-columns:minmax(0,1fr) 292px;
+  column-gap:clamp(32px,4vw,80px);align-items:end;padding:2.6vh 0}
+.eyebrow{font-family:Merriweather,Georgia,serif;font-style:italic;font-weight:400;font-size:clamp(16px,1.25vw,19px);line-height:1.3;margin:0 0 .55em}
+h1{font-family:Merriweather,Georgia,serif;font-weight:300;font-stretch:87.5%;font-size:var(--F);
+  line-height:1.0;letter-spacing:-.026em;margin:-.14em 0 .3em;padding-block:.14em}
+h1 em{font-style:italic;font-weight:300;letter-spacing:-.012em}
+h1 .nb{white-space:nowrap}
+.lede{font-size:clamp(16px,1.18vw,18px);line-height:1.58;max-width:29em;margin:0;text-wrap:pretty}
+
+.buy{position:relative;z-index:3}
+.prod{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:0 0 14px}
+.ptitle{font-family:Merriweather,Georgia,serif;font-style:italic;font-weight:400;font-size:20px;line-height:1.25;margin:0}
+.pspec{font-size:13px;line-height:1.3;color:var(--soft);margin:0;white-space:nowrap}
+.rule{height:1px;margin:0 0 18px;background:var(--soft);opacity:.5}
+.label{font-weight:700;font-size:12.5px;line-height:1.3;letter-spacing:.03em;margin:0 0 9px}
+.swatches{display:flex;gap:8px;margin:0 0 8px}
+.swatch{width:36px;height:36px;border-radius:50%;border:0;padding:0;cursor:pointer;background:var(--c);
+  -webkit-tap-highlight-color:transparent}
+.caption{font-size:13.5px;line-height:1.45;margin:0 0 20px;min-height:2.9em;text-wrap:balance}
+.sizes{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 20px}
+.size{font-weight:600;font-size:14px;line-height:1;height:42px;border-radius:6px;border:1.25px solid var(--ink);
+  background:transparent;color:var(--ink);cursor:pointer}
+.size[aria-checked="true"]{background:var(--ink);color:var(--paper)}
+.cta{display:flex;width:100%;justify-content:space-between;align-items:center;height:56px;padding:0 20px;border-radius:7px;border:0;
+  background:var(--acc);color:var(--paper);font-weight:700;font-size:16px;line-height:1;cursor:pointer}
+.num,.size,#price{font-family:Merriweather,Georgia,serif;font-variant-numeric:lining-nums tabular-nums}
+.size{font-weight:500;font-size:14.5px}
+#price{font-weight:700;font-size:17px}
+.fine{font-size:13px;line-height:1.45;color:var(--soft);margin:12px 0 0}
+
+.foot{display:flex;justify-content:space-between;align-items:baseline;gap:6px 40px;flex-wrap:wrap}
+.hint{font-size:13.5px;line-height:1.4;font-style:italic;color:var(--soft);margin:0}
+.micro{font-size:8px;line-height:1.35;margin:7px 0 0;color:var(--ink);max-width:36em}
+
+:focus-visible{outline:2px solid var(--ink);outline-offset:4px}
+.swatch:focus-visible{outline-offset:5px}
+.stone{position:absolute;z-index:2;left:0;top:0;width:0;height:0;border-radius:50%;touch-action:none;cursor:grab;outline:none;
+  -webkit-tap-highlight-color:transparent}
+.stone.held{cursor:grabbing}
+.css-stone{display:none;position:absolute;z-index:0;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle at 36% 30%,rgba(255,255,255,.75),rgba(255,255,255,0) 22%),
+  radial-gradient(circle at 50% 50%,rgba(214,236,231,.25) 55%,rgba(11,31,36,.28) 88%,rgba(11,31,36,.05) 100%);
+  box-shadow:18px 22px 40px rgba(11,31,36,.16)}
+.nogl .css-stone{display:block}
+.nogl .swatch[aria-checked="true"]{box-shadow:0 0 0 3px var(--paper),0 0 0 4.5px var(--ink)}
+/* WebGL prints the page; the DOM keeps every word and control for selection, search and screen readers. */
+.pre .ink{color:transparent!important}
+.pre .cta,.pre .size,.pre .swatch,.pre .rule{background:transparent!important;border-color:transparent!important}
+.pre ::selection{background:rgba(50,22,6,.16);color:transparent}
+.pre:not(.gl) .ink{animation:show 0s 4.5s forwards}
+@keyframes show{to{color:var(--ink)}}
+@media (min-width:1024px){
+  html,body{height:100%;overflow:hidden}
+  .page{height:100vh;min-height:0}
+}
+@media (max-width:860px){
+  :root{--F:min(11vw,9vh,96px)}
+  .hero{grid-template-columns:minmax(0,1fr);row-gap:28px;align-items:start}
+  .buy{max-width:360px}
+}
+@media (max-width:599px){
+  :root{--F:min(12.6vw,7vh,58px);--side:22px}
+  .nav{display:none}
+  .top{grid-template-columns:1fr auto}
+  .brand{justify-self:start}
+  h1 .nb{white-space:normal}
+  .foot{flex-direction:column;align-items:flex-start;margin-top:22px}
+}
+@media (prefers-reduced-motion:reduce){#glass,html{transition:none}}
+</style>
+</head>
+<body>
+<main class="page" id="page">
+  <canvas id="glass" aria-hidden="true"></canvas>
+  <div class="css-stone" id="cssStone" aria-hidden="true"></div>
+  <header class="top">
+    <nav class="nav" aria-label="Main">
+      <button class="navlink ink" type="button" data-ink="soft">Stones</button>
+      <button class="navlink ink" type="button" data-ink="soft">Care</button>
+      <button class="navlink ink" type="button" data-ink="soft">Journal</button>
+    </nav>
+    <p class="brand ink" data-ink="main">Beryl</p>
+    <div class="util">
+      <button class="navlink ink" id="sound" type="button" data-ink="soft" aria-pressed="true">Sound on</button>
+      <button class="navlink ink" id="bag" type="button" data-ink="main">Bag <span class="num" id="bagN">0</span></button>
+    </div>
+  </header>
+  <section class="hero">
+    <div class="read">
+      <h1 class="ink" id="headline" data-ink="main"><span class="nb">Bring every word</span> <em class="nb">a little closer.</em></h1>
+      <p class="lede ink" id="lede" data-ink="main">A dome of optical glass, ground and polished by hand. Set it on any page and the words beneath it rise to one and a half times their size.</p>
+    </div>
+    <div class="buy">
+      <div class="prod"><p class="ptitle ink" data-ink="main">The reading stone</p><p class="pspec ink" data-ink="soft"><span class="num">1.5</span>× magnification</p></div>
+      <div class="rule" data-ink="rule"></div>
+      <p class="label ink" id="glassLabel" data-ink="main">Glass</p>
+      <div class="swatches" role="radiogroup" aria-labelledby="glassLabel" id="swatches"></div>
+      <p class="caption" id="caption"><span class="ink" data-ink="main" id="vname">Amber.</span> <span class="ink" data-ink="soft" id="vfact">Iron and sulfur, the recipe behind brown bottles.</span></p>
+      <p class="label ink" id="sizeLabel" data-ink="main">Size</p>
+      <div class="sizes" role="radiogroup" aria-labelledby="sizeLabel" id="sizes"></div>
+      <button class="cta ink" id="cta" type="button" data-ink="cta"><span id="ctaText">Add to bag</span><span id="price">€140</span></button>
+      <p class="fine ink" data-ink="soft">Free delivery in the EU. Arrives in a linen case.</p>
+      <p class="micro ink" id="micro" data-ink="main">Every stone is checked against a line of 6 point type like this one. If you can read it through the glass, it ships.</p>
+    </div>
+  </section>
+  <footer class="foot">
+    <p class="hint ink" data-ink="soft">Drag the stone, or click anywhere to slide it there.</p>
+  </footer>
+  <div class="stone" id="stone" role="button" tabindex="0"
+    aria-label="Reading stone. Drag it across the page, or use the arrow keys to move it from word to word. Press Enter to tap the glass."></div>
+</main>
+<script>
+(function () {
+'use strict';
+var D = document, root = D.documentElement, page = D.getElementById('page'), cv = D.getElementById('glass');
+var stoneEl = D.getElementById('stone'), cta = D.getElementById('cta'), soundBtn = D.getElementById('sound'), bagBtn = D.getElementById('bag');
+var headline = D.getElementById('headline'), lede = D.getElementById('lede'), micro = D.getElementById('micro'), cssStone = D.getElementById('cssStone');
+var RM = matchMedia('(prefers-reduced-motion: reduce)');
+
+/* ---------------------------------------------------------------- the product */
+// Six glasses. Each colour is a metal in the melt.
+var VARIANTS = [
+  { name: 'Ruby', fact: 'Gold, in specks far too small to see.', sig: [.006, .34, .22], paper: '#F0D3D0', ink: '#2E0A10', soft: '#7A5056', acc: '#A61E34', swatch: '#C8344C' },
+  { name: 'Amber', fact: 'Iron and sulfur, the recipe behind brown bottles.', sig: [.008, .09, .4], paper: '#F2D9B9', ink: '#321606', soft: '#7A5A3E', acc: '#BC5A12', swatch: '#E09A3E' },
+  { name: 'Emerald', fact: 'Chromium, the metal that greens a real emerald.', sig: [.26, .035, .2], paper: '#D0E3D7', ink: '#0A2618', soft: '#476556', acc: '#126C47', swatch: '#2E9C6A' },
+  { name: 'Cobalt', fact: 'So strong a colourant that a trace turns a whole melt blue.', sig: [.3, .16, .02], paper: '#CCD8EF', ink: '#0D1838', soft: '#4A5676', acc: '#2342A8', swatch: '#3F63C8' },
+  { name: 'Amethyst', fact: 'Manganese, the reason old clear bottles turn violet in the sun.', sig: [.12, .3, .02], paper: '#DDD5EE', ink: '#1D1238', soft: '#5D5378', acc: '#5E36A6', swatch: '#8A64C9' },
+  { name: 'Clear', fact: 'Low in iron, so it stays clear where window glass turns green.', sig: [.022, .018, .015], paper: '#E6E4DE', ink: '#15161A', soft: '#64645F', acc: '#23252B', swatch: '#E9EEEC' }
+];
+var SIZES = [{ mm: 60, k: .78, price: 95 }, { mm: 80, k: 1, price: 140 }, { mm: 100, k: 1.22, price: 190 }];
+var vi = 1, si = 1, bag = 0;
+var swatchEls = [], sizeEls = [];
+VARIANTS.forEach(function (v, i) {
+  var b = D.createElement('button');
+  b.type = 'button'; b.className = 'swatch'; b.setAttribute('role', 'radio'); b.setAttribute('aria-label', v.name);
+  b.setAttribute('aria-checked', String(i === vi)); b.tabIndex = i === vi ? 0 : -1; b.style.setProperty('--c', v.swatch);
+  D.getElementById('swatches').appendChild(b); swatchEls.push(b);
+});
+SIZES.forEach(function (s, i) {
+  var b = D.createElement('button');
+  b.type = 'button'; b.className = 'size ink'; b.setAttribute('data-ink', 'size'); b.setAttribute('role', 'radio');
+  b.setAttribute('aria-checked', String(i === si)); b.tabIndex = i === si ? 0 : -1; b.textContent = s.mm + ' mm';
+  D.getElementById('sizes').appendChild(b); sizeEls.push(b);
+});
+
+function fail() {
+  root.classList.remove('pre', 'gl'); root.classList.add('nogl');
+  try {
+    var r = wordRect(headline, 'closer.'), pr = page.getBoundingClientRect();
+    if (!r) return;
+    var R = Math.max(60, parseFloat(getComputedStyle(headline).fontSize) * 1.4);
+    Object.assign(cssStone.style, { left: (r.left + r.width / 2 - pr.left - R) + 'px', top: (r.top + r.height / 2 - pr.top - R) + 'px', width: 2 * R + 'px', height: 2 * R + 'px' });
+  } catch (e) {}
+}
+function wordRect(el, word) {
+  var w = D.createTreeWalker(el, NodeFilter.SHOW_TEXT), n;
+  while ((n = w.nextNode())) {
+    var i = n.data.indexOf(word);
+    if (i >= 0) { var rg = D.createRange(); rg.setStart(n, i); rg.setEnd(n, i + word.length); return rg.getBoundingClientRect(); }
+  }
+  return null;
+}
+
+var gl = null;
+try { gl = cv.getContext('webgl2', { antialias: false, alpha: false, depth: false, stencil: false, premultipliedAlpha: false, powerPreference: 'high-performance' }); } catch (e) {}
+if (!gl) { fail(); return; }
+
+/* ---------------------------------------------------------------- optics */
+function norm3(v) { var l = Math.hypot(v[0], v[1], v[2]); return [v[0] / l, v[1] / l, v[2] / l]; }
+// Page coordinates: x right, y down, z out of the paper. The window is up and to the left.
+var SUN = norm3([-.461, -.580, .669]);
+var WIN = norm3([-.450, -.456, .766]);
+var WHALF = [.45, .32];
+var NGL = [1.548, 1.553, 1.563];          // a touch of dispersion, like lead crystal
+var DOM = 2.5, MAPN = 256, NDOME = 7;
+// Uniform room light around a dome on paper, traced once offline (radius 0 to 2.4 in 64 steps).
+var AMB = [.871,.869,.87,.872,.876,.878,.88,.883,.887,.889,.888,.885,.883,.877,.862,.843,.784,.607,.353,.165,.075,.029,.006,.001,0,0,0,.514,.705,.759,.798,.826,.851,.868,.886,.897,.912,.921,.928,.938,.944,.949,.954,.96,.964,.968,.971,.974,.978,.981,.983,.984,.986,.988,.989,.991,.993,.996,.996,.997,.998,.998,.999,1,1];
+
+function fresnel(c, n1, n2) {
+  var s = n1 / n2 * Math.sqrt(Math.max(0, 1 - c * c));
+  if (s >= 1) return 1;
+  var t = Math.sqrt(1 - s * s), rs = (n1 * c - n2 * t) / (n1 * c + n2 * t), rp = (n1 * t - n2 * c) / (n1 * t + n2 * c);
+  return .5 * (rs * rs + rp * rp);
+}
+// Light on the page around a dome of radius 1 for one direction L: direct light where nothing is in
+// the way, plus a regular grid of rays traced through the glass and binned where they land. Open
+// paper comes out as exactly 1. Colourless here; the shader tints what passed through the glass.
+function lightLayer(N, L, n, buf) {
+  var cell = 2 * DOM / N, inv = 1 / cell, i, j, sx, sy;
+  for (j = 0; j < N; j++) for (i = 0; i < N; i++) {
+    var lit = 0;
+    for (sy = 0; sy < 2; sy++) for (sx = 0; sx < 2; sx++) {
+      var x = (i + .25 + .5 * sx) * cell - DOM, y = (j + .25 + .5 * sy) * cell - DOM, r2 = x * x + y * y;
+      if (r2 < 1) continue;
+      var ql = x * L[0] + y * L[1];
+      if (!(ql < 0 && ql * ql > r2 - 1)) lit++;
+    }
+    buf[j * N + i] += lit / 4;
+  }
+  var len = Math.hypot(L[0], L[1]) || 1, e1 = [-L[1] / len, L[0] / len, 0];
+  var e2 = [L[1] * e1[2] - L[2] * e1[1], L[2] * e1[0] - L[0] * e1[2], L[0] * e1[1] - L[1] * e1[0]];
+  var step = cell / 1.6, flux = step * step / L[2] / (cell * cell);
+  function splat(x, y, w) {
+    var fx = (x + DOM) * inv - .5, fy = (y + DOM) * inv - .5, ix = Math.floor(fx), iy = Math.floor(fy);
+    if (ix < 0 || iy < 0 || ix >= N - 1 || iy >= N - 1) return;
+    var tx = fx - ix, ty = fy - iy, k = iy * N + ix;
+    buf[k] += w * (1 - tx) * (1 - ty); buf[k + 1] += w * tx * (1 - ty);
+    buf[k + N] += w * (1 - tx) * ty; buf[k + N + 1] += w * tx * ty;
+  }
+  for (var b = -1 + step / 2; b < 1; b += step) for (var a = -1 + step / 2; a < 1; a += step) {
+    var q = a * a + b * b;
+    if (q >= 1) continue;
+    var c1 = Math.sqrt(1 - q);
+    var px = a * e1[0] + b * e2[0] + c1 * L[0], py = a * e1[1] + b * e2[1] + c1 * L[1], pz = a * e1[2] + b * e2[2] + c1 * L[2];
+    if (pz < 0) continue;
+    var eta = 1 / n, f = eta * c1 - Math.sqrt(1 - eta * eta * (1 - c1 * c1));
+    var dx = -eta * L[0] + f * px, dy = -eta * L[1] + f * py, dz = -eta * L[2] + f * pz;
+    var T = flux * (1 - fresnel(c1, 1, n));
+    for (var bounce = 0; bounce < 5 && T > 1e-4 * flux; bounce++) {
+      var sb = dz < 0 ? -pz / dz : Infinity;
+      var pd = px * dx + py * dy + pz * dz, ss = -pd + Math.sqrt(Math.max(0, pd * pd - (px * px + py * py + pz * pz - 1)));
+      var ci, s2, F;
+      if (sb < ss) {
+        px += dx * sb; py += dy * sb; pz = 0;
+        ci = -dz; s2 = n * n * (1 - ci * ci);
+        if (s2 < 1) { F = fresnel(ci, n, 1); splat(px, py, T * (1 - F)); T *= F; }
+        dz = -dz;
+      } else {
+        px += dx * ss; py += dy * ss; pz += dz * ss;
+        ci = px * dx + py * dy + pz * dz; s2 = n * n * (1 - ci * ci);
+        if (s2 < 1) {
+          F = fresnel(ci, n, 1);
+          var g = n * ci - Math.sqrt(1 - s2), tx = n * dx + g * px, ty = n * dy + g * py, tz = n * dz + g * pz;
+          if (tz < 0) { var s0 = -pz / tz, lx = px + tx * s0, ly = py + ty * s0; if (lx * lx + ly * ly > 1) splat(lx, ly, T * (1 - F)); }
+          T *= F;
+        }
+        dx -= 2 * ci * px; dy -= 2 * ci * py; dz -= 2 * ci * pz;
+      }
+    }
+  }
+}
+function blurMap(src, N, passes) {
+  var tmp = new Float32Array(N * N), i, j, k;
+  for (var p = 0; p < passes; p++) {
+    for (j = 0; j < N; j++) for (i = 0; i < N; i++) { k = j * N + i; tmp[k] = .25 * src[i > 0 ? k - 1 : k] + .5 * src[k] + .25 * src[i < N - 1 ? k + 1 : k]; }
+    for (j = 0; j < N; j++) for (i = 0; i < N; i++) { k = j * N + i; src[k] = .25 * tmp[j > 0 ? k - N : k] + .5 * tmp[k] + .25 * tmp[j < N - 1 ? k + N : k]; }
+  }
+}
+function frameOf(c) { var u = norm3([-c[1], c[0], 0]); return [u, [c[1] * u[2] - c[2] * u[1], c[2] * u[0] - c[0] * u[2], c[0] * u[1] - c[1] * u[0]]]; }
+// Two light states for the page: sunny (sharp caustic) and a cloud over the sun (soft).
+function buildLight() {
+  var N = MAPN, NN = N * N, sun = [], ch, k, i, j;
+  for (ch = 0; ch < 3; ch++) {
+    var buf = new Float32Array(NN), fr = frameOf(SUN), dirs = [[0, 0]];
+    for (k = 0; k < 4; k++) { var an = k / 4 * 6.2832 + ch * .7; dirs.push([Math.cos(an) * .7, Math.sin(an) * .7]); }
+    for (k = 0; k < dirs.length; k++) {
+      var u = dirs[k][0] * .02, v = dirs[k][1] * .02;
+      lightLayer(N, norm3([SUN[0] + u * fr[0][0] + v * fr[1][0], SUN[1] + u * fr[0][1] + v * fr[1][1], SUN[2] + u * fr[0][2] + v * fr[1][2]]), NGL[ch], buf);
+    }
+    for (k = 0; k < NN; k++) buf[k] /= dirs.length;
+    blurMap(buf, N, 1);
+    sun.push(buf);
+  }
+  var win = new Float32Array(NN), wf = frameOf(WIN), S = 4;
+  for (j = 0; j < S; j++) for (i = 0; i < S; i++) {
+    var gu = ((i + .5 + .17 * (j % 2)) / S * 2 - 1) * WHALF[0], gv = ((j + .5) / S * 2 - 1) * WHALF[1];
+    lightLayer(N, norm3([WIN[0] + gu * wf[0][0] + gv * wf[1][0], WIN[1] + gu * wf[0][1] + gv * wf[1][1], WIN[2] + gu * wf[0][2] + gv * wf[1][2]]), NGL[1], win);
+  }
+  for (k = 0; k < NN; k++) win[k] /= S * S;
+  blurMap(win, N, 2);
+  var sunny = new Float32Array(NN * 4), cloudy = new Float32Array(NN * 4);
+  for (j = 0; j < N; j++) for (i = 0; i < N; i++) {
+    k = j * N + i;
+    var x = (i + .5) / N * 2 * DOM - DOM, y = (j + .5) / N * 2 * DOM - DOM, r = Math.hypot(x, y) / 2.4 * 64, r0 = Math.min(63, Math.floor(r)), rf = Math.min(1, r - r0);
+    var amb = r >= 64 ? 1 : AMB[r0] + (AMB[r0 + 1] - AMB[r0]) * rf;
+    for (ch = 0; ch < 3; ch++) {
+      sunny[k * 4 + ch] = .13 * sun[ch][k] + .17 * win[k] + .70 * amb;
+      cloudy[k * 4 + ch] = .01 * sun[ch][k] + .11 * win[k] + .88 * amb;
+    }
+    sunny[k * 4 + 3] = cloudy[k * 4 + 3] = 1;
+  }
+  return [sunny, cloudy];
+}
+
+/* ---------------------------------------------------------------- shaders */
+function v3(a) { return a.map(function (x) { return x.toFixed(5); }).join(','); }
+var VS = '#version 300 es\nvoid main(){vec2 p=vec2(float((gl_VertexID<<1)&2),float(gl_VertexID&2));gl_Position=vec4(p*2.-1.,0.,1.);}';
+var FS = '#version 300 es\n' + [
+'precision highp float;',
+'uniform sampler2D uInk,uSunny,uCloudy;',
+'uniform vec2 uRes,uPage;',
+'uniform float uDpr,uSun,uTime,uMotion,uFocus,uRipple,uBiteLod,uHotAmt,uPress;',
+'uniform vec3 uEye;',
+'uniform vec3 uPal[12];',
+'uniform vec4 uWave[2];',
+'uniform vec4 uDome[' + NDOME + '];',
+'uniform vec3 uSig[' + NDOME + '];',
+'uniform float uDSun[' + NDOME + '];',
+'uniform vec4 uWaves[4];',
+'uniform vec4 uHot;',
+'out vec4 outColor;',
+'const float DOM=' + DOM.toFixed(2) + ';',
+'const vec3 SUN=vec3(' + v3(SUN) + ');',
+'const vec3 WIN=vec3(' + v3(WIN) + ');',
+'const vec2 WHALF=vec2(' + v3(WHALF) + ');',
+'const vec3 NG=vec3(' + v3(NGL) + ');',
+'float hash(vec2 p){p=fract(p*vec2(443.897,441.423));p+=dot(p,p.yx+19.19);return fract((p.x+p.y)*p.x);}',
+'float vnoise(vec2 p){vec2 i=floor(p),f=fract(p);vec2 u=f*f*f*(f*(f*6.-15.)+10.);',
+'  return mix(mix(hash(i),hash(i+vec2(1,0)),u.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),u.x),u.y);}',
+'float fibres(vec2 q){vec2 a=vec2(q.x*.21+q.y*.07,q.y*.62-q.x*.05);',
+'  return vnoise(a*.9)*.55+vnoise(a*2.3+7.1)*.3+vnoise(q*1.7+3.)*.15-.5;}',
+'float fres(float c,float n1,float n2){float s=n1/n2*sqrt(max(0.,1.-c*c));if(s>=1.)return 1.;',
+'  float t=sqrt(1.-s*s);float rs=(n1*c-n2*t)/(n1*c+n2*t),rp=(n1*t-n2*c)/(n1*t+n2*c);return .5*(rs*rs+rp*rp);}',
+// Colour: a base palette (paper, ink, soft ink, accent) and up to two waves of a new one spreading
+// out from the bead that was picked.
+'float waveMask(vec4 w,vec2 q){return 1.-smoothstep(w.z-w.w,w.z,length(q-w.xy));}',
+'void pal(vec2 q,out vec3 P,out vec3 I,out vec3 S,out vec3 A){',
+'  float m1=waveMask(uWave[0],q),m2=waveMask(uWave[1],q);',
+'  P=mix(mix(uPal[0],uPal[4],m1),uPal[8],m2);I=mix(mix(uPal[1],uPal[5],m1),uPal[9],m2);',
+'  S=mix(mix(uPal[2],uPal[6],m1),uPal[10],m2);A=mix(mix(uPal[3],uPal[7],m1),uPal[11],m2);}',
+'vec3 paperAt(vec2 q){float m1=waveMask(uWave[0],q),m2=waveMask(uWave[1],q);return mix(mix(uPal[0],uPal[4],m1),uPal[8],m2);}',
+'vec3 inkAt(vec2 q){float m1=waveMask(uWave[0],q),m2=waveMask(uWave[1],q);return mix(mix(uPal[1],uPal[5],m1),uPal[9],m2);}',
+// The window's own light on the page: four panes and the soft shadows of their crossbars.
+'float pool(vec2 q){vec2 d=(q-vec2(uPage.x*.34,uPage.y*.47))/uPage.y;',
+'  vec2 w=vec2(d.x*.970+d.y*.242,-d.x*.242+d.y*.970);w.x-=w.y*.42;',
+'  float edge=(1.-smoothstep(.40,.435,abs(w.x)))*(1.-smoothstep(.30,.335,abs(w.y)));',
+'  float bars=smoothstep(.006,.017,abs(w.x+.11))*smoothstep(.006,.017,abs(w.y+.09));',
+'  return edge*bars;}',
+'vec3 lightAt(vec2 uv,float lod,float sw){return mix(textureLod(uCloudy,uv,lod).rgb,textureLod(uSunny,uv,lod).rgb,sw);}',
+// Light falling on the paper. Each dome throws its own caustic and shadow, sharp only where the sun
+// reaches it; light that came through the glass takes the glass's colour. A lifted dome throws it further and softer.
+'vec3 illum(vec2 q){',
+'  vec3 L=vec3(1.);',
+'  for(int i=0;i<' + NDOME + ';i++){',
+'    vec4 d=uDome[i];if(d.z<=0.)continue;',
+'    vec2 l=(q-d.xy)/d.z;if(dot(l,l)>DOM*DOM*.97)continue;',
+'    float h=d.w/d.z,inside=1.-smoothstep(.9,1.02,length(l)),sw=uDSun[i];',
+'    l+=SUN.xy/SUN.z*h;vec2 uv=l/(2.*DOM)+.5;vec3 Li;',
+'    if(h>.001){float lod=min(3.5,h*6.),r=exp2(lod)/256.*.75;',
+'      Li=.25*(lightAt(uv+vec2(r,.3*r),lod,sw)+lightAt(uv+vec2(-.3*r,r),lod,sw)+lightAt(uv-vec2(r,.3*r),lod,sw)+lightAt(uv-vec2(-.3*r,r),lod,sw));',
+'    }else Li=lightAt(uv,0.,sw);',
+'    vec2 e=1.-smoothstep(vec2(.46),vec2(.5),abs(uv-.5));Li=mix(vec3(1.),Li,e.x*e.y);',
+'    Li+=.55*inside*max(vec3(0.),1.-Li);',
+'    Li*=mix(vec3(1.),exp(-uSig[i]*1.05),inside);',
+'    L*=Li;}',
+'  return L*mix(.985,mix(.935,1.07,pool(q)),uSun);}',
+'float biteAt(vec2 uv){vec4 k=textureLod(uInk,uv,uBiteLod);return k.r+k.g+.6*k.b;}',
+'float inRect(vec2 q,vec4 r){return step(r.x,q.x)*step(q.x,r.x+r.z)*step(r.y,q.y)*step(q.y,r.y+r.w);}',
+// Paper, its fibre, the inks, and the bite of letterpress: inked areas are pressed into the sheet
+// and the window light rakes their edges. A hovered control presses a little deeper, a pressed one more.
+'vec3 paperShade(vec2 q,vec4 ink,vec3 L){',
+'  vec2 uv=q/uPage;float hot=inRect(q,uHot);vec3 P,I,S,A;pal(q,P,I,S,A);',
+'  vec3 a=P*(1.+.03*fibres(q))*(1.+.014*(hash(floor(q*1.5))-.5));',
+'  vec3 soft=mix(S,I,hot*uHotAmt);',
+'  vec3 acc=A*(1.-.16*hot*uHotAmt-.1*hot*uPress);',
+'  a*=mix(vec3(1.),I/P,ink.r);',
+'  a*=mix(vec3(1.),acc/P,ink.g);',
+'  a*=mix(vec3(1.),soft/P,ink.b);',
+'  vec2 e=vec2(1.2)/uPage;',
+'  vec2 g=vec2(biteAt(uv+vec2(e.x,0.))-biteAt(uv-vec2(e.x,0.)),biteAt(uv+vec2(0.,e.y))-biteAt(uv-vec2(0.,e.y)));',
+'  float depth=.55+hot*(.55*uHotAmt+1.4*uPress);',
+'  a*=1.+depth*dot(g,normalize(SUN.xy))*.08;',
+'  return a*L;}',
+// The room as the glass sees it: warm walls, a dark ceiling over the camera, a four-pane window
+// with the sun in it, and a white card low on the right.
+'vec3 sky(vec3 d){',
+'  vec3 col=mix(vec3(.34,.31,.28),vec3(.028,.028,.034),smoothstep(.05,.9,d.z));',
+'  float c=dot(d,WIN);',
+'  if(c>.2){vec3 tu=normalize(vec3(-WIN.y,WIN.x,0.)),tv=cross(WIN,tu);vec2 g=vec2(dot(d,tu),dot(d,tv))/c;',
+'    float m=(1.-smoothstep(WHALF.x-.015,WHALF.x+.025,abs(g.x)))*(1.-smoothstep(WHALF.y-.015,WHALF.y+.025,abs(g.y)));',
+'    float bars=smoothstep(.007,.018,abs(g.x))*smoothstep(.007,.018,abs(g.y-.03));',
+'    vec3 glow=mix(vec3(7.4,8.1,9.2),vec3(11.4,11.9,12.5),smoothstep(-.3,.3,g.y))*mix(.58,1.,uSun);',
+'    col=mix(col,mix(vec3(.05,.045,.04),glow,bars),m);}',
+'  col+=vec3(1.,.9,.76)*650.*smoothstep(.99976,.99988,dot(d,SUN))*uSun;',
+'  vec3 K=normalize(vec3(.9,.25,.36));float kc=dot(d,K);',
+'  if(kc>.2){vec3 ku=normalize(vec3(-K.y,K.x,0.)),kv=cross(K,ku);vec2 g=vec2(dot(d,ku),dot(d,kv))/kc;',
+'    col=mix(col,vec3(2.1,2.,1.86),(1.-smoothstep(.5,.62,abs(g.x)))*(1.-smoothstep(.3,.4,abs(g.y))));}',
+'  return col;}',
+'vec3 envPaper(vec3 o,vec3 d){if(d.z<-.002){vec2 q=o.xy+d.xy*(-o.z/d.z);return paperAt(q)*illum(q);}return sky(d);}',
+// A press sends rings across the big dome (stone units). xy is the slope, z the height.
+'vec3 ripple(vec2 q){vec3 acc=vec3(0.);',
+'  for(int i=0;i<4;i++){vec4 w=uWaves[i];float age=uTime-w.z;',
+'    if(age<0.||age>3.2||w.w<=0.)continue;',
+'    vec2 dp=q-w.xy;float d=length(dp);vec2 dir=dp/max(d,1e-4);float rad=age*.9;',
+'    float a=(d-rad)/.085,b=(d-rad+.2)/.12,ea=exp(-a*a),eb=exp(-b*b);',
+'    float env=smoothstep(0.,.1,age)*(1.-smoothstep(2.3,3.1,age))*w.w*(1.-.45*smoothstep(.4,2.,rad));',
+'    float cd=exp(-d*d/.02)*exp(-age*6.);',
+'    acc.z+=(.05*ea-.028*eb-.03*cd)*env;',
+'    acc.xy+=dir*(-.1*a/.085*ea+.056*b/.12*eb+.06*d/.02*cd)*env;}',
+'  return acc*uMotion;}',
+'float rippleH(vec2 q){return ripple(q).z;}',
+// Inside the glass for one wavelength: down to the flat base (out to the paper, or total internal
+// reflection back up), up to the dome (out to the room, or back in). The first ray that reaches
+// the paper is returned so its ink can be read with proper filtering; the rest is summed here.
+'void traceIn(vec3 P,vec3 N,vec3 d0,float n,float sig,vec3 S,float R,float h,out vec3 rad,out vec2 land,out float wl){',
+'  rad=vec3(0.);land=P.xy;wl=0.;bool landed=false;',
+'  vec3 d=refract(d0,N,1./n);float T=1.-fres(-dot(d0,N),1.,n);vec3 pos=P;',
+'  for(int k=0;k<5;k++){',
+'    float sb=d.z<0.?(h-pos.z)/d.z:1e9;',
+'    vec3 oc=pos-S;float b=dot(oc,d),c=dot(oc,oc)-R*R;float ss=-b+sqrt(max(b*b-c,0.));',
+'    if(sb<ss){pos+=d*sb;T*=exp(-sig*sb/R);float ci=-d.z;',
+'      if(n*n*(1.-ci*ci)<1.){float F=fres(ci,n,1.);vec3 t2=refract(d,vec3(0.,0.,1.),n);',
+'        vec2 q=pos.xy+t2.xy*(h/max(-t2.z,1e-3));',
+'        if(!landed){land=q;wl=T*(1.-F);landed=true;}else rad+=T*(1.-F)*paperAt(q)*illum(q);',
+'        T*=F;}',
+'      d.z=-d.z;',
+'    }else{pos+=d*ss;T*=exp(-sig*ss/R);vec3 Ns=(pos-S)/R;float ci=dot(d,Ns);',
+'      if(n*n*(1.-ci*ci)<1.){float F=fres(ci,n,1.);rad+=T*(1.-F)*envPaper(pos,refract(d,-Ns,n));T*=F;}',
+'      d=reflect(d,Ns);}',
+'    if(T<.004)break;}',
+'  rad+=T*.5*envPaper(pos,d);}',
+// One dome seen by the camera. Every pixel of its disc runs the same path, so the screen
+// derivatives used to filter the refracted ink are defined; the coverage only blends the result.
+'vec3 glassAt(vec2 p,vec4 Dm,vec3 sig,bool big,out float cover){',
+'  float R=Dm.z,h=Dm.w;vec3 S=vec3(Dm.xy,h);',
+'  vec3 d=normalize(vec3(p,0.)-uEye);',
+'  vec3 Xh=uEye+d*((h-uEye.z)/d.z);float rh=length(Xh.xy-Dm.xy);',
+'  cover=clamp((R-rh)*uDpr+.5,0.,1.);',
+'  float rin=R-1.2/uDpr;',
+'  if(rh>rin)d=normalize(vec3(Dm.xy+(Xh.xy-Dm.xy)*rin/rh,h)-uEye);',
+'  vec3 oc=uEye-S;float b=dot(oc,d),c=dot(oc,oc)-R*R;',
+'  vec3 P1=uEye+d*(-b-sqrt(max(b*b-c,0.)));',
+'  vec3 N1=(P1-S)/R;',
+'  vec3 rg=big?ripple((P1.xy-Dm.xy)/R):vec3(0.);',
+'  N1=normalize(N1-vec3(rg.xy*.24,0.));',
+'  vec3 glass=fres(-dot(d,N1),1.,NG.g)*envPaper(P1,reflect(d,N1));',
+// The side of each ring that faces the window catches a little more light.
+'  glass+=vec3(1.,.97,.92)*max(0.,dot(-rg.xy,normalize(SUN.xy)))*.32;',
+'  vec3 rR,rG,rB;vec2 lR,lG,lB;float wR,wG,wB;',
+'  traceIn(P1,N1,d,NG.r,sig.r,S,R,h,rR,lR,wR);',
+'  traceIn(P1,N1,d,NG.g,sig.g,S,R,h,rG,lG,wG);',
+'  traceIn(P1,N1,d,NG.b,sig.b,S,R,h,rB,lB,wB);',
+'  vec4 iR,iG,iB;float shiver=1.;',
+'  if(big){vec2 gx=dFdx(lG)/uPage,gy=dFdy(lG)/uPage;',
+'    iR=textureGrad(uInk,lR/uPage,gx,gy);iG=textureGrad(uInk,lG/uPage,gx,gy);iB=textureGrad(uInk,lB/uPage,gx,gy);',
+'    if(uRipple>0.){vec2 q=(lG-Dm.xy)/R;float e=.03;',
+'      float lap=(rippleH(q+vec2(e,0.))+rippleH(q-vec2(e,0.))+rippleH(q+vec2(0.,e))+rippleH(q-vec2(0.,e))-4.*rippleH(q))/(e*e);',
+'      shiver=clamp(1.-.05*lap,.55,1.8);}',
+'  }else{iR=textureLod(uInk,lR/uPage,0.);iG=textureLod(uInk,lG/uPage,0.);iB=textureLod(uInk,lB/uPage,0.);}',
+'  vec3 sR=paperShade(lR,iR,illum(lR)*shiver);',
+'  vec3 sG=paperShade(lG,iG,illum(lG)*shiver);',
+'  vec3 sB=paperShade(lB,iB,illum(lB)*shiver);',
+'  return glass+vec3(rR.r+wR*sR.r,rG.g+wG*sG.g,rB.b+wB*sB.b);}',
+'vec3 srgb(vec3 c){return mix(c*12.92,1.055*pow(c,vec3(1./2.4))-.055,step(.0031308,c));}',
+'void main(){',
+'  vec2 p=vec2(gl_FragCoord.x,uRes.y-gl_FragCoord.y)/uDpr;',
+'  vec3 col=paperShade(p,texture(uInk,p/uPage),illum(p));',
+'  int k=-1;float best=1.44;',
+'  for(int i=0;i<' + NDOME + ';i++){vec4 Dm=uDome[i];if(Dm.z<=0.)continue;vec2 r=(p-Dm.xy)/Dm.z;float q=dot(r,r);if(q<best){best=q;k=i;}}',
+'  float cover;',
+'  if(k==0){vec3 g=glassAt(p,uDome[0],uSig[0],true,cover);col=mix(col,g,cover);}',
+'  else if(k>0){vec3 g=glassAt(p,uDome[k],uSig[k],false,cover);col=mix(col,g,cover);}',
+'  if(uFocus>0.){float fr=abs(length(p-uDome[0].xy)-uDome[0].z-9.);col=mix(col,inkAt(p),uFocus*clamp(1.25-fr*uDpr*.6,0.,1.));}',
+'  col=mix(col,.9+.1*(1.-exp(-(col-.9)/.1)),step(.9,col));',
+'  outColor=vec4(srgb(clamp(col,0.,1.))+(hash(gl_FragCoord.xy)-.5)/255.,1.);',
+'}'].join('\n');
+
+function compile(type, src) {
+  var s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s);
+  if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s));
+  return s;
+}
+var prog, U = {};
+try {
+  prog = gl.createProgram();
+  gl.attachShader(prog, compile(gl.VERTEX_SHADER, VS)); gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, FS));
+  gl.linkProgram(prog);
+  if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(prog));
+} catch (e) { console.error(e); fail(); return; }
+gl.useProgram(prog);
+['uInk', 'uSunny', 'uCloudy', 'uRes', 'uPage', 'uDpr', 'uSun', 'uTime', 'uMotion', 'uFocus', 'uRipple', 'uBiteLod', 'uHotAmt', 'uPress',
+ 'uPal', 'uWave', 'uDSun', 'uEye', 'uDome', 'uSig', 'uWaves', 'uHot'].forEach(function (n) { U[n] = gl.getUniformLocation(prog, n); });
+gl.uniform1i(U.uInk, 0); gl.uniform1i(U.uSunny, 1); gl.uniform1i(U.uCloudy, 2);
+gl.bindVertexArray(gl.createVertexArray());
+gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
+gl.pixelStorei(gl.UNPACK_COLORSPACE_CONVERSION_WEBGL, gl.NONE);
+var aniso = gl.getExtension('EXT_texture_filter_anisotropic');
+
+var inkTex = gl.createTexture(), sunTex = gl.createTexture(), cloudTex = gl.createTexture();
+function lightTexture(tex, unit, data) {
+  gl.activeTexture(gl.TEXTURE0 + unit); gl.bindTexture(gl.TEXTURE_2D, tex);
+  var n = MAPN, lvl = 0, cur = data;
+  while (lvl <= 4) {
+    gl.texImage2D(gl.TEXTURE_2D, lvl, gl.RGBA16F, n, n, 0, gl.RGBA, gl.FLOAT, cur);
+    var m = n >> 1, nx = new Float32Array(m * m * 4);
+    for (var j = 0; j < m; j++) for (var i = 0; i < m; i++) for (var c = 0; c < 4; c++) {
+      var a = ((2 * j) * n + 2 * i) * 4 + c;
+      nx[(j * m + i) * 4 + c] = .25 * (cur[a] + cur[a + 4] + cur[a + n * 4] + cur[a + n * 4 + 4]);
+    }
+    cur = nx; n = m; lvl++;
+  }
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAX_LEVEL, 4);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+}
+
+/* ---------------------------------------------------------------- colour */
+function lin(hex) {
+  var n = parseInt(hex.slice(1), 16);
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255].map(function (c) { c /= 255; return c <= .04045 ? c / 12.92 : Math.pow((c + .055) / 1.055, 2.4); });
+}
+function palOf(v) { return [].concat(lin(v.paper), lin(v.ink), lin(v.soft), lin(v.acc)); }
+// A new colour spreads out from the bead that was picked, like the light changing in the room.
+// Two waves can be in flight; a third settles the oldest.
+var palBase = palOf(VARIANTS[vi]), sigBase = VARIANTS[vi].sig.slice(), flows = [], FLOW_SOFT = 160;
+function startFlow(i, x, y, t) {
+  var v = VARIANTS[i];
+  root.style.setProperty('--paper', v.paper); root.style.setProperty('--ink', v.ink);
+  root.style.setProperty('--soft', v.soft); root.style.setProperty('--acc', v.acc);
+  if (RM.matches) { palBase = palOf(v); sigBase = v.sig.slice(); flows = []; return; }
+  if (flows.length >= 2) { var f0 = flows.shift(); palBase = f0.pal; sigBase = f0.sig; }
+  var rmax = Math.max(Math.hypot(x, y), Math.hypot(W - x, y), Math.hypot(x, H - y), Math.hypot(W - x, H - y));
+  flows.push({ pal: palOf(v), sig: v.sig.slice(), x: x, y: y, t0: t, dur: .9 + rmax / 2400, rmax: rmax, r: 0 });
+}
+function flowStep(t) {
+  for (var i = 0; i < flows.length; i++) {
+    var f = flows[i], u = Math.min(1, (t - f.t0) / f.dur);
+    f.r = (u < .5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2) * (f.rmax + FLOW_SOFT);
+  }
+  while (flows.length && t - flows[0].t0 >= flows[0].dur) { palBase = flows[0].pal; sigBase = flows[0].sig; flows.shift(); }
+}
+function flowMask(f, x, y) { var d = Math.hypot(x - f.x, y - f.y), a = f.r - FLOW_SOFT; return 1 - sstep(a, f.r, d); }
+function sstep(a, b, x) { var t = Math.max(0, Math.min(1, (x - a) / (b - a))); return t * t * (3 - 2 * t); }
+// The window's light on the page, the same shape as in the shader, so each dome knows how much sun it sits in.
+function pool(x, y) {
+  var dx = (x - W * .34) / H, dy = (y - H * .47) / H;
+  var wx = dx * .970 + dy * .242, wy = -dx * .242 + dy * .970;
+  wx -= wy * .42;
+  var edge = (1 - sstep(.40, .435, Math.abs(wx))) * (1 - sstep(.30, .335, Math.abs(wy)));
+  return edge * sstep(.006, .017, Math.abs(wx + .11)) * sstep(.006, .017, Math.abs(wy + .09));
+}
+
+/* ---------------------------------------------------------------- the printed page */
+var inkCanvas = D.createElement('canvas'), W = 0, H = 0, dpr = 1, ts = 1, F = 100, Rbase = 120, R = 120, Rk = 1;
+var words = [], rest = { x: 0, y: 0 }, swatches = [];
+var STRETCH = { '50%': 'ultra-condensed', '62.5%': 'extra-condensed', '75%': 'condensed', '87.5%': 'semi-condensed', '100%': 'normal', '112.5%': 'semi-expanded' };
+function textWords(el, pr) {
+  var out = [], w = D.createTreeWalker(el, NodeFilter.SHOW_TEXT), n, re = /\S+/g, m;
+  while ((n = w.nextNode())) {
+    var cs = getComputedStyle(n.parentElement);
+    re.lastIndex = 0;
+    while ((m = re.exec(n.data))) {
+      var rg = D.createRange(); rg.setStart(n, m.index); rg.setEnd(n, m.index + m[0].length);
+      var rs = rg.getClientRects();
+      if (!rs.length) continue;
+      var r = rs[0];
+      out.push({ t: m[0], x: r.left - pr.left, y: r.top - pr.top, w: r.width, h: r.height, cs: cs });
+    }
+  }
+  return out;
+}
+function setFont(c, cs) {
+  c.font = cs.fontStyle + ' ' + cs.fontWeight + ' ' + cs.fontSize + ' ' + cs.fontFamily;
+  if ('fontStretch' in c) c.fontStretch = STRETCH[cs.fontStretch] || 'normal';
+  if ('letterSpacing' in c) c.letterSpacing = cs.letterSpacing === 'normal' ? '0px' : cs.letterSpacing;
+  if ('fontKerning' in c) c.fontKerning = 'normal';
+}
+function drawWords(c, list, color) {
+  c.fillStyle = color;
+  var last = null;
+  for (var i = 0; i < list.length; i++) {
+    var w = list[i];
+    if (w.cs !== last) { setFont(c, w.cs); last = w.cs; }
+    var m = c.measureText(w.t), asc = m.fontBoundingBoxAscent;
+    if (!(asc > 0)) asc = w.h * .8;
+    var sx = m.width > 0 ? Math.max(.85, Math.min(1.18, w.w / m.width)) : 1;
+    c.save(); c.translate(w.x, w.y + asc); c.scale(sx, 1); c.fillText(w.t, 0, 0); c.restore();
+  }
+}
+function rrect(c, x, y, w, h, r) { c.beginPath(); if (c.roundRect) c.roundRect(x, y, w, h, r); else c.rect(x, y, w, h); }
+function relRect(el, pr) { var r = el.getBoundingClientRect(); return [r.left - pr.left, r.top - pr.top, r.width, r.height]; }
+function drawInk() {
+  var pr = page.getBoundingClientRect();
+  ts = Math.min(2, Math.max(window.devicePixelRatio || 1, 1.5), 4096 / Math.max(W, H, 1));
+  inkCanvas.width = Math.max(1, Math.round(W * ts)); inkCanvas.height = Math.max(1, Math.round(H * ts));
+  var c = inkCanvas.getContext('2d');
+  c.setTransform(1, 0, 0, 1, 0, 0); c.globalCompositeOperation = 'source-over'; c.fillStyle = '#000'; c.fillRect(0, 0, inkCanvas.width, inkCanvas.height);
+  c.setTransform(inkCanvas.width / W, 0, 0, inkCanvas.height / H, 0, 0);
+  var els = page.querySelectorAll('[data-ink]');
+  for (var i = 0; i < els.length; i++) {
+    var el = els[i], kind = el.getAttribute('data-ink'), list = textWords(el, pr), r = relRect(el, pr);
+    if (kind === 'cta') {
+      c.globalCompositeOperation = 'lighter'; c.fillStyle = 'rgb(0,255,0)'; rrect(c, r[0], r[1], r[2], r[3], 7); c.fill();
+      c.globalCompositeOperation = 'multiply'; drawWords(c, list, '#000');
+    } else if (kind === 'size') {
+      c.globalCompositeOperation = 'lighter';
+      if (el.getAttribute('aria-checked') === 'true') {
+        c.fillStyle = 'rgb(255,0,0)'; rrect(c, r[0], r[1], r[2], r[3], 6); c.fill();
+        c.globalCompositeOperation = 'multiply'; drawWords(c, list, '#000');
+      } else {
+        c.strokeStyle = 'rgb(255,0,0)'; c.lineWidth = 1.25; rrect(c, r[0] + .625, r[1] + .625, r[2] - 1.25, r[3] - 1.25, 6); c.stroke();
+        drawWords(c, list, 'rgb(255,0,0)');
+      }
+    } else if (kind === 'rule') {
+      c.globalCompositeOperation = 'lighter'; c.fillStyle = 'rgb(0,0,140)'; c.fillRect(r[0], r[1], r[2], 1);
+    } else {
+      c.globalCompositeOperation = 'lighter';
+      drawWords(c, list, kind === 'soft' ? 'rgb(0,0,255)' : 'rgb(255,0,0)');
+    }
+  }
+  // A printed ring marks the chosen glass.
+  swatches = swatchEls.map(function (b, k) {
+    var q = relRect(b, pr), old = swatches[k] || { hop: -9, hover: 0, hoverTo: 0 };
+    return { x: q[0] + q[2] / 2, y: q[1] + q[3] / 2, r: Math.min(q[2], q[3]) / 2 - 4, hop: old.hop, hover: old.hover, hoverTo: old.hoverTo };
+  });
+  var sel = swatches[vi];
+  c.globalCompositeOperation = 'lighter'; c.strokeStyle = 'rgb(255,0,0)'; c.lineWidth = 1.3;
+  c.beginPath(); c.arc(sel.x, sel.y, sel.r + 5.5, 0, 6.2832); c.stroke();
+  c.globalCompositeOperation = 'source-over';
+  gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, inkTex);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, gl.RGBA, gl.UNSIGNED_BYTE, inkCanvas);
+  gl.generateMipmap(gl.TEXTURE_2D);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  if (aniso) gl.texParameterf(gl.TEXTURE_2D, aniso.TEXTURE_MAX_ANISOTROPY_EXT, Math.min(8, gl.getParameter(aniso.MAX_TEXTURE_MAX_ANISOTROPY_EXT)));
+  // The words the stone can step between with the keyboard, in reading order, with their line.
+  var hw = textWords(headline, pr).concat(textWords(lede, pr), textWords(micro, pr)), line = -1, lastY = -1e9;
+  words = hw.map(function (w) { if (Math.abs(w.y - lastY) > w.h * .5) { line++; lastY = w.y; } return { t: w.t, x: w.x + w.w / 2, y: w.y + w.h * .5, line: line }; });
+  var hs = parseFloat(getComputedStyle(headline).fontSize);
+  for (var k = 0; k < hw.length; k++) if (hw[k].t === 'closer.') { var rc = clampT(hw[k].x + hw[k].w * .47, hw[k].y + hw[k].h * .5 + hs * .02, Rbase * SIZES[si].k); rest = { x: rc[0], y: rc[1] }; }
+}
+
+/* ---------------------------------------------------------------- state */
+var st = { x: 0, y: 0, vx: 0, vy: 0, tx: 0, ty: 0, tvx: 0, tvy: 0, gx: 0, gy: 0, h: 0, w: 24, glide: false }, placed = false;
+var drag = null, ent = null, waves = [], slot = 0, lastPress = -99;
+var hot = [0, 0, 0, 0], hotAmt = 0, hotTo = 0, pressK = 0, pressTo = 0, focus = 0, sunW = 1, cloud = null, cloudTimer = 0;
+var touching = [false, false, false, false];
+var t0 = performance.now(), raf = 0, last = t0, ready = false;
+for (var wi = 0; wi < 4; wi++) waves.push([0, 0, -99, 0]);
+function now() { return (performance.now() - t0) / 1000; }
+function clampT(x, y, r) {
+  var m = (r || R) + 6;
+  return [Math.max(m, Math.min(W - m, x)), Math.max(m, Math.min(H - m, y))];
+}
+
+function layout() {
+  var w = page.clientWidth, h = page.clientHeight;
+  if (w < 200 || h < 200) return false;
+  var oldW = W, oldH = H, wasRest = placed && Math.hypot(st.x - rest.x, st.y - rest.y) < 2;
+  W = w; H = h;
+  dpr = Math.min(window.devicePixelRatio || 1, 2, Math.sqrt(6.5e6 / (W * H)));
+  cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+  F = parseFloat(getComputedStyle(headline).fontSize);
+  Rbase = W < 600 ? Math.max(62, Math.min(W * .22, F * 1.9, 120)) : Math.max(80, Math.min(F * 1.42, 224));
+  if (!placed) R = Rbase * SIZES[si].k;
+  drawInk();
+  if (!placed) return true;
+  if (wasRest || !oldW) { st.x = st.tx = rest.x; st.y = st.ty = rest.y; }
+  else { var c = clampT(st.x / oldW * W, st.y / oldH * H); st.x = st.tx = c[0]; st.y = st.ty = c[1]; }
+  st.vx = st.vy = st.tvx = st.tvy = 0; st.glide = false;
+  syncHit(true);
+  return true;
+}
+
+/* ---------------------------------------------------------------- sound */
+var audio = null, soundOn = true, fricLevel = 0;
+function glassTone(ctx, pitch, dur) {
+  var rate = ctx.sampleRate; dur = dur || 2.6;
+  var n = Math.ceil(rate * dur), buf = ctx.createBuffer(2, n, rate);
+  var sm = function (x) { x = Math.max(0, Math.min(1, x)); return x * x * (3 - 2 * x); };
+  for (var side = 0; side < 2; side++) {
+    var ch = buf.getChannelData(side);
+    for (var i = 0; i < n; i++) {
+      var t = i / rate, at = 1 - Math.exp(-t * 420), tail = sm(t / .1) * sm((dur - t) / Math.min(1.4, dur * .55));
+      // A soft knock of glass on paper, the crystal's partials, then a quiet tonal bed.
+      var v = .06 * Math.sin(6.2832 * 150 * t) * Math.exp(-t * 46) * at;
+      v += .022 * Math.sin(6.2832 * (1180 * pitch + side * .5) * t) * Math.exp(-t * 6) * at;
+      v += .011 * Math.sin(6.2832 * (1771 * pitch + side * .5) * t) * Math.exp(-t * 8.5) * at;
+      v += .005 * Math.sin(6.2832 * (2655 * pitch + side * .5) * t) * Math.exp(-t * 12) * at;
+      v += (.006 * Math.sin(6.2832 * (147 * pitch + side * .07) * t) + .004 * Math.sin(6.2832 * (220.5 * pitch + side * .07) * t)
+        + .0035 * Math.sin(6.2832 * (294 * pitch) * t)) * tail * Math.exp(-t * .9);
+      ch[i] = v;
+    }
+  }
+  return buf;
+}
+// The press of a printed button: a short, dry tap on paper.
+function paperTap(ctx) {
+  var rate = ctx.sampleRate, n = Math.ceil(rate * .09), buf = ctx.createBuffer(1, n, rate), d = buf.getChannelData(0), seed = 3, lp = 0;
+  for (var i = 0; i < n; i++) { seed = (seed * 16807) % 2147483647; var t = i / rate; lp += (seed / 1073741823.5 - 1 - lp) * .22; d[i] = (lp * .09 + .045 * Math.sin(6.2832 * 210 * t)) * Math.exp(-t * 75) * (1 - Math.exp(-t * 2000)); }
+  return buf;
+}
+function buildAudio(ctx) {
+  var a = { ctx: ctx, tones: {}, voices: [] };
+  a.master = ctx.createGain(); a.master.gain.value = soundOn ? 1 : 0;
+  var comp = ctx.createDynamicsCompressor(); comp.threshold.value = -14; comp.ratio.value = 3;
+  a.master.connect(comp); comp.connect(ctx.destination);
+  // Glass sliding on paper: a breath of filtered noise that follows the stone's speed.
+  var n = ctx.sampleRate * 2, nb = ctx.createBuffer(1, n, ctx.sampleRate), d = nb.getChannelData(0), seed = 7;
+  for (var i = 0; i < n; i++) { seed = (seed * 16807) % 2147483647; d[i] = seed / 1073741823.5 - 1; }
+  a.noise = ctx.createBufferSource(); a.noise.buffer = nb; a.noise.loop = true;
+  var bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 2300; bp.Q.value = .7;
+  var lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 260;
+  a.hiss = ctx.createGain(); a.hiss.gain.value = 0; a.rub = ctx.createGain(); a.rub.gain.value = 0;
+  a.noise.connect(bp); bp.connect(a.hiss); a.hiss.connect(a.master);
+  a.noise.connect(lp); lp.connect(a.rub); a.rub.connect(a.master);
+  a.noise.start();
+  a.tap = paperTap(ctx);
+  return a;
+}
+function ensureAudio() {
+  if (audio) { if (audio.ctx.state === 'suspended') audio.ctx.resume().catch(function () {}); return audio; }
+  var AC = window.AudioContext || window.webkitAudioContext;
+  if (!AC) return null;
+  try { audio = buildAudio(new AC()); } catch (e) { audio = null; }
+  // Synthesise every bead's and the stone's tones in the background, one at a time, so no later click waits.
+  if (audio) {
+    var queue = [1, 9 / 8, 5 / 4, 3 / 2, 5 / 3, 2].map(function (p) { return [p * 1.6, 1.4]; }).concat(PENTA.map(function (p) { return [p * .89, 0]; }));
+    var warm = function () { var q = queue.shift(); if (!q || !audio) return; var key = q[0].toFixed(4) + '/' + q[1]; if (!audio.tones[key]) audio.tones[key] = glassTone(audio.ctx, q[0], q[1] || undefined); setTimeout(warm, 90); };
+    setTimeout(warm, 1800);
+  }
+  return audio;
+}
+function play(buf, gain) {
+  var a = audio;
+  if (!a || !soundOn) return;
+  try {
+    if (a.voices.length >= 8) { try { a.voices.shift().stop(); } catch (e) {} }
+    var s = a.ctx.createBufferSource(), g = a.ctx.createGain(); g.gain.value = gain;
+    s.buffer = buf; s.connect(g); g.connect(a.master); s.start();
+    a.voices.push(s); s.onended = function () { var k = a.voices.indexOf(s); if (k >= 0) a.voices.splice(k, 1); s.disconnect(); g.disconnect(); };
+  } catch (e) {}
+}
+function tone(pitch, gain, dur) {
+  var a = ensureAudio();
+  if (!a) return;
+  var key = pitch.toFixed(4) + '/' + (dur || 0);
+  play(a.tones[key] || (a.tones[key] = glassTone(a.ctx, pitch, dur)), gain);
+}
+var PENTA = [1, 9 / 8, 5 / 4, 3 / 2, 5 / 3];
+function friction(speed) {
+  if (!audio) return;
+  var lv = soundOn ? Math.pow(Math.min(1, speed / (R * 7)), .8) : 0;
+  if (Math.abs(lv - fricLevel) < .01 && lv !== 0) return;
+  fricLevel = lv;
+  var t = audio.ctx.currentTime, j = .85 + Math.random() * .3;
+  audio.hiss.gain.setTargetAtTime(lv * .055 * j, t, .035);
+  audio.rub.gain.setTargetAtTime(lv * .09, t, .05);
+}
+
+/* ---------------------------------------------------------------- interaction */
+function press(lx, ly) {
+  var t = now();
+  waves[slot] = [lx, ly, t, 1]; slot = (slot + 1) % 4; lastPress = t;
+  tone(PENTA[Math.max(0, Math.min(4, Math.floor(st.x / W * 5)))] * .89, 1);
+  wake();
+}
+function local(cx, cy) { var pr = page.getBoundingClientRect(); return [cx - pr.left, cy - pr.top]; }
+function finishEntrance() { if (ent) { ent = null; st.h = 0; } }
+// A click or a key sends the stone gliding. Two critically damped springs in a row: the goal pulls
+// an invisible target, the target pulls the stone. It leaves rest with no jolt and settles with no overshoot.
+function glideTo(x, y, w) {
+  var c = clampT(x, y);
+  st.gx = c[0]; st.gy = c[1]; st.w = w || 9; st.glide = true;
+  if (RM.matches) { st.x = st.tx = st.gx; st.y = st.ty = st.gy; st.vx = st.vy = st.tvx = st.tvy = 0; st.glide = false; syncHit(true); }
+  ensureAudio(); wake();
+}
+stoneEl.addEventListener('pointerdown', function (e) {
+  if (!ready || e.button > 0) return;
+  e.preventDefault();
+  finishEntrance(); ensureAudio();
+  var p = local(e.clientX, e.clientY);
+  st.glide = false; st.tvx = st.tvy = 0;
+  drag = { id: e.pointerId, ox: p[0] - st.x, oy: p[1] - st.y, px: p[0], py: p[1] };
+  st.w = 24;
+  try { stoneEl.setPointerCapture(e.pointerId); } catch (err) {}
+  stoneEl.classList.add('held');
+  var lx = (p[0] - st.x) / R, ly = (p[1] - st.y) / R, l = Math.hypot(lx, ly);
+  if (l > .97) { lx *= .97 / l; ly *= .97 / l; }
+  press(lx, ly);
+});
+function onMove(e) {
+  if (!drag || e.pointerId !== drag.id) return;
+  var p = local(e.clientX, e.clientY);
+  drag.px = p[0]; drag.py = p[1];
+  wake();
+}
+function onUp(e) {
+  if (!drag || e.pointerId !== drag.id) return;
+  drag = null; stoneEl.classList.remove('held');
+  wake();
+}
+window.addEventListener('pointermove', onMove);
+window.addEventListener('pointerup', onUp);
+window.addEventListener('pointercancel', onUp);
+stoneEl.addEventListener('lostpointercapture', onUp);
+page.addEventListener('pointermove', function () { if (hitDirty && !drag) syncHit(true); });
+page.addEventListener('click', function (e) {
+  if (!ready || !(e.target instanceof Element)) return;
+  if (e.target.closest('button,a,.stone')) return;
+  var sel = window.getSelection && window.getSelection();
+  if (sel && String(sel).length) return;
+  finishEntrance();
+  var p = local(e.clientX, e.clientY);
+  glideTo(p[0], p[1]);
+});
+stoneEl.addEventListener('keydown', function (e) {
+  if (!ready) return;
+  var k = e.key;
+  if (k === 'Enter' || k === ' ' || k === 'Spacebar') { e.preventDefault(); finishEntrance(); ensureAudio(); press(0, 0); return; }
+  if (!words.length) return;
+  var cur = 0, best = 1e9;
+  for (var i = 0; i < words.length; i++) { var dd = Math.hypot(words[i].x - st.tx, (words[i].y - st.ty) * 1.5); if (dd < best) { best = dd; cur = i; } }
+  var next = -1;
+  if (k === 'ArrowRight') next = best > R * .25 ? cur : Math.min(words.length - 1, cur + 1);
+  else if (k === 'ArrowLeft') next = best > R * .25 ? cur : Math.max(0, cur - 1);
+  else if (k === 'Home') next = 0;
+  else if (k === 'End') next = words.length - 1;
+  else if (k === 'ArrowDown' || k === 'ArrowUp') {
+    var target = words[cur].line + (k === 'ArrowDown' ? 1 : -1), bx = 1e9;
+    for (var j = 0; j < words.length; j++) if (words[j].line === target && Math.abs(words[j].x - st.tx) < bx) { bx = Math.abs(words[j].x - st.tx); next = j; }
+    if (next < 0) next = cur;
+  } else return;
+  e.preventDefault(); finishEntrance();
+  glideTo(words[next].x, words[next].y, 10);
+});
+stoneEl.addEventListener('focus', function () { focus = stoneEl.matches(':focus-visible') ? 1 : 0; wake(); });
+stoneEl.addEventListener('blur', function () { focus = 0; syncHit(true); wake(); });
+
+// Printed controls: hovering presses the ink a little deeper, pressing presses it further.
+function hotOn(el) { var pr = page.getBoundingClientRect(); hot = relRect(el, pr); hotTo = 1; wake(); }
+function hotOff() { hotTo = 0; pressTo = 0; wake(); }
+[].slice.call(page.querySelectorAll('.cta,.size,.navlink')).forEach(function (el) {
+  el.addEventListener('pointerenter', function () { hotOn(el); });
+  el.addEventListener('pointerleave', hotOff);
+  el.addEventListener('pointerdown', function () { hotOn(el); pressTo = 1; wake(); });
+  el.addEventListener('pointerup', function () { pressTo = 0; wake(); });
+  el.addEventListener('focus', function () { if (el.matches(':focus-visible')) hotOn(el); });
+  el.addEventListener('blur', hotOff);
+  el.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { hotOn(el); pressTo = 1; wake(); } });
+  el.addEventListener('keyup', function () { pressTo = 0; wake(); });
+});
+
+function selectVariant(i, viaKey) {
+  if (i === vi) { hop(i); return; }
+  vi = i;
+  swatchEls.forEach(function (b, k) { b.setAttribute('aria-checked', String(k === i)); b.tabIndex = k === i ? 0 : -1; });
+  D.getElementById('vname').textContent = VARIANTS[i].name + '.';
+  D.getElementById('vfact').textContent = VARIANTS[i].fact;
+  if (viaKey) swatchEls[i].focus();
+  var b = swatches[i] || { x: W / 2, y: H / 2 };
+  startFlow(i, b.x, b.y, now());
+  drawInk(); hop(i);
+}
+function hop(i) {
+  if (!swatches[i]) return;
+  swatches[i].hop = now();
+  ensureAudio(); tone([1, 9 / 8, 5 / 4, 3 / 2, 5 / 3, 2][i] * 1.6, .55, 1.4);
+  wake();
+}
+swatchEls.forEach(function (b, i) {
+  b.addEventListener('click', function () { selectVariant(i, false); });
+  b.addEventListener('pointerenter', function () { if (swatches[i]) { swatches[i].hoverTo = 1; wake(); } });
+  b.addEventListener('pointerleave', function () { if (swatches[i]) { swatches[i].hoverTo = 0; wake(); } });
+});
+D.getElementById('swatches').addEventListener('keydown', function (e) {
+  var d = e.key === 'ArrowRight' || e.key === 'ArrowDown' ? 1 : e.key === 'ArrowLeft' || e.key === 'ArrowUp' ? -1 : 0;
+  if (!d) return;
+  e.preventDefault(); selectVariant((vi + d + VARIANTS.length) % VARIANTS.length, true);
+});
+function selectSize(i, viaKey) {
+  if (i === si) return;
+  si = i;
+  sizeEls.forEach(function (b, k) { b.setAttribute('aria-checked', String(k === i)); b.tabIndex = k === i ? 0 : -1; });
+  D.getElementById('price').textContent = '€' + SIZES[i].price;
+  if (viaKey) sizeEls[i].focus();
+  drawInk();
+  ensureAudio(); if (audio) play(audio.tap, .9);
+  wake();
+}
+sizeEls.forEach(function (b, i) { b.addEventListener('click', function () { selectSize(i, false); }); });
+D.getElementById('sizes').addEventListener('keydown', function (e) {
+  var d = e.key === 'ArrowRight' || e.key === 'ArrowDown' ? 1 : e.key === 'ArrowLeft' || e.key === 'ArrowUp' ? -1 : 0;
+  if (!d) return;
+  e.preventDefault(); selectSize((si + d + SIZES.length) % SIZES.length, true);
+});
+var addedTimer = 0;
+cta.addEventListener('click', function () {
+  bag++;
+  D.getElementById('bagN').textContent = String(bag);
+  D.getElementById('ctaText').textContent = 'Added to bag';
+  ensureAudio(); if (audio) play(audio.tap, 1);
+  drawInk(); wake();
+  clearTimeout(addedTimer);
+  addedTimer = setTimeout(function () { D.getElementById('ctaText').textContent = 'Add to bag'; drawInk(); wake(); }, 1800);
+});
+soundBtn.addEventListener('click', function () {
+  soundOn = !soundOn;
+  soundBtn.textContent = soundOn ? 'Sound on' : 'Sound off';
+  soundBtn.setAttribute('aria-pressed', String(soundOn));
+  if (audio) { audio.master.gain.setTargetAtTime(soundOn ? 1 : 0, audio.ctx.currentTime, .03); if (soundOn) ensureAudio(); }
+  drawInk(); wake();
+});
+
+var hitDirty = true, hitX = -1, hitY = -1, hitR = -1;
+function syncHit(force) {
+  if (!force && D.activeElement === stoneEl && !drag) { hitDirty = true; return; }
+  if (Math.abs(hitX - st.x) < .5 && Math.abs(hitY - st.y) < .5 && Math.abs(hitR - R) < .5) { hitDirty = false; return; }
+  hitX = st.x; hitY = st.y; hitR = R; hitDirty = false;
+  stoneEl.style.transform = 'translate(' + (st.x - R).toFixed(1) + 'px,' + (st.y - R).toFixed(1) + 'px)';
+  stoneEl.style.width = stoneEl.style.height = (2 * R).toFixed(1) + 'px';
+}
+
+/* ---------------------------------------------------------------- clouds */
+function scheduleCloud(delay) {
+  clearTimeout(cloudTimer);
+  if (RM.matches) return;
+  cloudTimer = setTimeout(function () { cloud = { t0: now(), dur: 7.5 + Math.random() * 2.5, depth: .8 + Math.random() * .15 }; wake(); }, delay);
+}
+function cloudAt(t) {
+  if (!cloud) return 1;
+  var u = (t - cloud.t0) / cloud.dur;
+  if (u >= 1) { cloud = null; scheduleCloud(16000 + Math.random() * 14000); return 1; }
+  var e = u < .34 ? u / .34 : u > .66 ? (1 - u) / .34 : 1;
+  e = e * e * (3 - 2 * e);
+  return 1 - cloud.depth * e;
+}
+
+/* ---------------------------------------------------------------- frame */
+function ease(x) { return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; }
+function easeSine(x) { return -(Math.cos(Math.PI * x) - 1) / 2; }
+function smoother(x) { x = Math.max(0, Math.min(1, x)); return x * x * x * (x * (x * 6 - 15) + 10); }
+function update(t, dt) {
+  var motion = !RM.matches;
+  if (ent) {
+    var u = t - ent.t0, dropT = 1.35, slideAt = 1.6, slideT = 1.15;
+    st.h = ent.h0 * (1 - easeSine(Math.min(1, u / dropT)));
+    if (u < slideAt) { st.tx = st.x = ent.x0; st.ty = st.y = ent.y0; }
+    else { var s = ease(Math.min(1, (u - slideAt) / slideT)); st.tx = ent.x0 + (rest.x - ent.x0) * s; st.ty = ent.y0 + (rest.y - ent.y0) * s; st.w = 24; }
+    if (u > slideAt + slideT + .2) { ent = null; st.h = 0; scheduleCloud(9000); }
+  }
+  // Size: the stone grows or shrinks in place.
+  var kTo = SIZES[si].k;
+  Rk += (kTo - Rk) * (motion ? 1 - Math.exp(-dt * 7) : 1); if (Math.abs(kTo - Rk) < .0005) Rk = kTo;
+  R = Rbase * Rk;
+  if (drag) { var c = clampT(drag.px - drag.ox, drag.py - drag.oy); st.tx = c[0]; st.ty = c[1]; st.glide = false; }
+  else if (st.glide && !ent) {
+    var gc = clampT(st.gx, st.gy), gw = st.w;
+    st.tvx += (gw * gw * (gc[0] - st.tx) - 2 * gw * st.tvx) * dt; st.tvy += (gw * gw * (gc[1] - st.ty) - 2 * gw * st.tvy) * dt;
+    st.tx += st.tvx * dt; st.ty += st.tvy * dt;
+    if (Math.hypot(gc[0] - st.tx, gc[1] - st.ty) < .05 && Math.hypot(st.tvx, st.tvy) < 1) { st.tx = gc[0]; st.ty = gc[1]; st.tvx = st.tvy = 0; st.glide = false; }
+  } else if (!ent) { var cc = clampT(st.tx, st.ty); st.tx = cc[0]; st.ty = cc[1]; }
+  // Critically damped follow: the glass has weight but no wobble. Dragging is tight, a glide is slow.
+  var w = st.w, ax = w * w * (st.tx - st.x) - 2 * w * st.vx, ay = w * w * (st.ty - st.y) - 2 * w * st.vy;
+  st.vx += ax * dt; st.vy += ay * dt; st.x += st.vx * dt; st.y += st.vy * dt;
+  // The beads are solid glass too: the stone slides round them, with a clink on contact.
+  for (var i = 0; i < swatches.length; i++) {
+    var sw = swatches[i], dx = st.x - sw.x, dy = st.y - sw.y, dd = Math.hypot(dx, dy) || 1, m = R + sw.r + 3;
+    if (dd < m) {
+      var nx = dx / dd, ny = dy / dd, push = m - dd;
+      st.x += nx * push; st.y += ny * push;
+      var vn = st.vx * nx + st.vy * ny; if (vn < 0) { st.vx -= vn * nx; st.vy -= vn * ny; }
+      var tdx = st.tx - sw.x, tdy = st.ty - sw.y, td = Math.hypot(tdx, tdy) || 1;
+      if (td < m) { st.tx = sw.x + tdx / td * m; st.ty = sw.y + tdy / td * m; }
+      var gdx = st.gx - sw.x, gdy = st.gy - sw.y, gd = Math.hypot(gdx, gdy) || 1;
+      if (st.glide && gd < m) { st.gx = sw.x + gdx / gd * m; st.gy = sw.y + gdy / gd * m; }
+      if (!touching[i] && Math.abs(vn) > 30) { tone(2.4 + i * .17, Math.min(.5, Math.abs(vn) / 900), .9); sw.hop = t; }
+      touching[i] = true;
+    } else if (dd > m + 2) touching[i] = false;
+  }
+  if (Math.hypot(st.tx - st.x, st.ty - st.y) < .05 && Math.hypot(st.vx, st.vy) < 1) { st.x = st.tx; st.y = st.ty; st.vx = st.vy = 0; }
+  friction(ent ? 0 : Math.hypot(st.vx, st.vy));
+  hotAmt += (hotTo - hotAmt) * (1 - Math.exp(-dt * 14)); if (Math.abs(hotTo - hotAmt) < .002) hotAmt = hotTo;
+  pressK += (pressTo - pressK) * (1 - Math.exp(-dt * 30)); if (Math.abs(pressTo - pressK) < .002) pressK = pressTo;
+  for (i = 0; i < swatches.length; i++) {
+    var s2 = swatches[i];
+    s2.hover += (s2.hoverTo - s2.hover) * (1 - Math.exp(-dt * 12)); if (Math.abs(s2.hoverTo - s2.hover) < .002) s2.hover = s2.hoverTo;
+  }
+  flowStep(t);
+  sunW = motion ? cloudAt(t) : 1;
+  syncHit(false);
+}
+function hopAt(sw, t) {
+  var u = (t - sw.hop) / .5;
+  return (u >= 0 && u < 1 && !RM.matches ? Math.sin(Math.PI * u) * .55 : 0) + sw.hover * .16;
+}
+function busy(t) {
+  if (ent || drag || cloud || st.glide || st.vx !== 0 || st.vy !== 0 || st.x !== st.tx || st.y !== st.ty) return true;
+  if ((t - lastPress < 3.25 && !RM.matches) || hotAmt !== hotTo || pressK !== pressTo || fricLevel > 0) return true;
+  if (R !== Rbase * SIZES[si].k || flows.length) return true;
+  for (var i = 0; i < swatches.length; i++) if (t - swatches[i].hop < .55 || swatches[i].hover !== swatches[i].hoverTo) return true;
+  return false;
+}
+var domeBuf = new Float32Array(NDOME * 4), sigBuf = new Float32Array(NDOME * 3), sunBuf = new Float32Array(NDOME), waveBuf = new Float32Array(16);
+var palBuf = new Float32Array(36), flowBuf = new Float32Array(8);
+function draw(t) {
+  gl.viewport(0, 0, cv.width, cv.height);
+  gl.uniform2f(U.uRes, cv.width, cv.height); gl.uniform2f(U.uPage, W, H); gl.uniform1f(U.uDpr, cv.width / W);
+  gl.uniform1f(U.uSun, sunW); gl.uniform1f(U.uTime, t); gl.uniform1f(U.uMotion, RM.matches ? 0 : 1);
+  gl.uniform1f(U.uFocus, focus); gl.uniform1f(U.uRipple, !RM.matches && t - lastPress < 3.25 ? 1 : 0);
+  gl.uniform1f(U.uBiteLod, Math.log2(ts) + .9); gl.uniform1f(U.uHotAmt, hotAmt); gl.uniform1f(U.uPress, pressK);
+  gl.uniform4f(U.uHot, hot[0], hot[1], hot[2], hot[3]);
+  gl.uniform3f(U.uEye, W * .5, Math.min(H, innerHeight || H) * .46, Math.max(W, H, 900) * 2.4);
+  // Palettes: the base, then each wave in flight. A wave with radius 0 changes nothing.
+  for (var i = 0; i < 12; i++) palBuf[i] = palBase[i];
+  for (var w = 0; w < 2; w++) {
+    var f = flows[w], src = f ? f.pal : palBase;
+    for (i = 0; i < 12; i++) palBuf[12 + w * 12 + i] = src[i];
+    flowBuf[w * 4] = f ? f.x : 0; flowBuf[w * 4 + 1] = f ? f.y : 0; flowBuf[w * 4 + 2] = f ? f.r : 0; flowBuf[w * 4 + 3] = f ? FLOW_SOFT : 1;
+  }
+  gl.uniform3fv(U.uPal, palBuf); gl.uniform4fv(U.uWave, flowBuf);
+  // The stone's glass changes when the wave reaches it.
+  var sg = sigBase.slice();
+  for (w = 0; w < flows.length; w++) { var m = flowMask(flows[w], st.x, st.y); for (i = 0; i < 3; i++) sg[i] += (flows[w].sig[i] - sg[i]) * m; }
+  domeBuf[0] = st.x; domeBuf[1] = st.y; domeBuf[2] = R; domeBuf[3] = st.h;
+  sigBuf[0] = sg[0]; sigBuf[1] = sg[1]; sigBuf[2] = sg[2];
+  sunBuf[0] = sunW * (.18 + .82 * pool(st.x, st.y));
+  for (i = 0; i < NDOME - 1; i++) {
+    var sw = swatches[i];
+    domeBuf[4 + i * 4] = sw ? sw.x : 0; domeBuf[5 + i * 4] = sw ? sw.y : 0; domeBuf[6 + i * 4] = sw ? sw.r : 0; domeBuf[7 + i * 4] = sw ? sw.r * hopAt(sw, t) : 0;
+    // A bead is tiny, so it gets a deeper tint than the stone to show its colour at a glance.
+    sigBuf[3 + i * 3] = VARIANTS[i].sig[0] * 2.2; sigBuf[4 + i * 3] = VARIANTS[i].sig[1] * 2.2; sigBuf[5 + i * 3] = VARIANTS[i].sig[2] * 2.2;
+    sunBuf[1 + i] = sw ? sunW * (.18 + .82 * pool(sw.x, sw.y)) : 0;
+  }
+  gl.uniform4fv(U.uDome, domeBuf); gl.uniform3fv(U.uSig, sigBuf); gl.uniform1fv(U.uDSun, sunBuf);
+  for (i = 0; i < 4; i++) for (var j = 0; j < 4; j++) waveBuf[i * 4 + j] = waves[i][j];
+  gl.uniform4fv(U.uWaves, waveBuf);
+  gl.drawArrays(gl.TRIANGLES, 0, 3);
+}
+function frame(ts2) {
+  raf = 0;
+  if (D.hidden || !ready) return;
+  var dt = Math.min(.05, Math.max(0, (ts2 - last) / 1000)); last = ts2;
+  var t = now();
+  update(t, dt); draw(t);
+  if (busy(t)) raf = requestAnimationFrame(frame);
+}
+function wake() { if (!raf && ready && !D.hidden) { last = performance.now(); raf = requestAnimationFrame(frame); } }
+
+/* ---------------------------------------------------------------- boot */
+function resize() {
+  if (!ready) return;
+  var w = page.clientWidth, h = page.clientHeight;
+  if (w < 200 || h < 200 || (w === W && h === H && cv.width === Math.round(W * dpr))) return;
+  if (layout()) { draw(now()); wake(); }
+}
+function fonts() {
+  var list = ['300 100px Merriweather', 'italic 300 100px Merriweather', 'italic 700 24px Merriweather', 'italic 400 18px Merriweather',
+    '400 18px "Atkinson Hyperlegible Next"', '500 14px "Atkinson Hyperlegible Next"', '600 14px "Atkinson Hyperlegible Next"', '700 16px "Atkinson Hyperlegible Next"', 'italic 400 14px "Atkinson Hyperlegible Next"'];
+  if (!D.fonts || !D.fonts.load) return Promise.resolve();
+  var all = Promise.all(list.map(function (f) { return D.fonts.load(f, 'Bring every word closer. Beryl €140 mm'); })).catch(function () {});
+  return Promise.race([all, new Promise(function (r) { setTimeout(r, 1400); })]);
+}
+fonts().then(function () {
+  try {
+    if (!layout()) {
+      // Embedded previews can load at zero size: try again once there is a box to fill.
+      var iv = setInterval(function () { if (page.clientWidth >= 200 && page.clientHeight >= 200 && layout()) { clearInterval(iv); boot(); } }, 120);
+      return;
+    }
+    boot();
+  } catch (e) { console.error(e); fail(); }
+});
+function boot() {
+  try {
+    var maps = buildLight();
+    lightTexture(sunTex, 1, maps[0]); lightTexture(cloudTex, 2, maps[1]);
+    placed = true;
+    st.x = st.tx = rest.x; st.y = st.ty = rest.y;
+    if (!RM.matches) {
+      var sx = clampT(rest.x - R * 1.35, rest.y)[0];
+      ent = { t0: now() + .35, x0: sx, y0: rest.y, h0: R * .9 };
+      st.x = st.tx = sx; st.h = ent.h0;
+    }
+    syncHit(true);
+    ready = true;
+    draw(now());
+    root.classList.add('gl');
+    wake();
+  } catch (e) { console.error(e); fail(); }
+}
+if (window.ResizeObserver) new ResizeObserver(resize).observe(page);
+window.addEventListener('resize', resize);
+window.addEventListener('pageshow', resize);
+setInterval(resize, 400);
+D.addEventListener('visibilitychange', function () { if (!D.hidden) { resize(); wake(); } });
+if (RM.addEventListener) RM.addEventListener('change', function () { if (RM.matches) { finishEntrance(); cloud = null; clearTimeout(cloudTimer); } else scheduleCloud(9000); wake(); });
+if (D.fonts && D.fonts.addEventListener) D.fonts.addEventListener('loadingdone', function () { if (ready) { layout(); draw(now()); wake(); } });
+cv.addEventListener('webglcontextlost', function (e) { e.preventDefault(); ready = false; fail(); });
+})();
+</script>
+</body>
+</html>
